@@ -1,0 +1,20 @@
+install.packages("caTools")
+library(caTools)
+data=read.csv("binary.csv",header=TRUE)
+str(data)
+#normalizing data (range in 0-1)
+data$gre=(data$gre-min(data$gre))/(max(data$gre)-min(data$gre))
+data$gpa=(data$gpa-min(data$gpa))/(max(data$gpa)-min(data$gpa))
+data$Rank=(data$Rank-min(data$Rank))/(max(data$Rank)-min(data$Rank))
+sample=sample.split(newdata,Splitratio=0.8)
+sample
+training=subset(newdata,sample==TRUE)
+testing=subset(newdata,sample==FALSE)
+install.packages("neuralnet")
+library(neuralnet)
+set.seed(333)
+n<-neuralnet(admit~gre+gpa+Rank,data=training)
+plot(n)
+n$weights
+output=compute(n,testing[-1])
+p2=output$net.result
